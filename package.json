@@ -17,6 +17,7 @@
     "bootstrap": "^4.1.3",
     "clipboard": "^2.0.1",
     "cssnano": "^4.0.5",
+    "fetch-jsonp": "^1.1.3",
     "gen-statem": "^1.2.3",
     "jquery": "^3.3.1",
     "lodash": "^4.17.10",

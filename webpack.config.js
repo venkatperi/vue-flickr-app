@@ -6,8 +6,7 @@ const ChunkhashReplaceWebpackPlugin = require( 'chunkhash-replace-webpack-plugin
 
 const pkg = require( './package.json' )
 
-// const isProduction = process.env.NODE_ENV === 'production'
-const isProduction = true
+const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
   entry: './src/main.js',

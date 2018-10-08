@@ -15,7 +15,7 @@
         </div>
       </div>
     </form>
-    <div class="gallery" >
+    <div class="gallery">
       <img v-for="item in items"
         class="item"
         :src="item.media.m"
@@ -25,10 +25,10 @@
 </template>
 
 <script>
-  import axios from 'axios';
   import delay from 'gen-statem/dist/src/util/delay';
   import * as toastr from 'toastr'
   import TaskStateMachine from '../../dist/TaskStateMachine';
+  import fetchJsonp from 'fetch-jsonp'
 
   // process.env.LOG_LEVEL = 'info'
 
@@ -86,17 +86,14 @@
 
     methods: {
       async search( query ) {
-        let res = await axios( {
-          method: 'get',
-          url: `https://api.flickr.com/services/feeds/photos_public.gne`,
-          params: {
-            format: 'json',
-            nojsoncallback: true,
-            lang: 'en-us',
-            tags: encodeURIComponent( query ),
-          },
-        } )
-        return res.data.items
+        const encodedQuery = encodeURIComponent( query );
+
+        let res = await fetchJsonp(
+          `https://api.flickr.com/services/feeds/photos_public.gne?lang=en-us&format=json&tags=${encodedQuery}`,
+          { jsonpCallback: 'jsoncallback' },
+        )
+
+        return (await res.json()).items
       },
 
       cancel() {
@@ -106,7 +103,7 @@
       handleSubmit() {
         this.items = []
         this.iter++
-        console.log(this.iter)
+        console.log( this.iter )
         toastr.remove()
         this.searchTask
           .reset()
