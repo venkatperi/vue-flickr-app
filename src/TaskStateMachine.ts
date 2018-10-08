@@ -117,5 +117,23 @@ export default class TaskStateMachine<R> extends StateMachine<TaskSMData<R>> {
         this.cast('start', request)
         return this
     }
+
+    /**
+     *
+     * @param fn
+     * @return {this<R>}
+     */
+    exec(fn: (any) => Promise<R>) {
+        this.on('run', async ({sessionId, request}) => {
+            try {
+                let res = await fn(request)
+                this.done(sessionId, res)
+            }
+            catch (e) {
+                this.error(sessionId, e)
+            }
+        })
+        return this
+    }
 }
 

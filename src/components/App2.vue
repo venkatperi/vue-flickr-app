@@ -9,27 +9,27 @@
             v-model="query"
             placeholder="Search Flickr..." />
           <span class="input-group-btn">
-        <button v-if="!taskRunning" type="submit" class="btn btn-info">Search</button>
-        <button v-else type="button" v-on:click="cancelTask()" class="btn btn-info">Cancel</button>
+        <button v-if="!isLoading" type="submit" class="btn btn-info">Search</button>
+        <button v-else type="button" v-on:click="cancel()" class="btn btn-info">Cancel</button>
       </span>
         </div>
       </div>
     </form>
     <div class="bottom">
-      <div class="message" v-if="taskRunning">
+      <div class="message" v-if="isLoading">
         Loading. You have 1 second to cancel...
       </div>
-      <div class="message" v-if="taskFailed" v-html="task.error">
+      <div class="message" v-if="isError" v-html="error">
         Error!
       </div>
-      <div class="message" v-if="taskTimedOut">
+      <div class="message" v-if="isTimeout">
         Yikes, that took too long. Timeout!
       </div>
-      <div class="message" v-if="taskCancelled">
+      <div class="message" v-if="isCancelled">
         Cancelled! Changed your mind?
       </div>
-      <div class="gallery" v-if="taskSucceeded">
-        <img v-for="item in task.response"
+      <div class="gallery" v-if="isSuccess">
+        <img v-for="item in items"
           class="item"
           :src="item.media.m"
         />
@@ -41,29 +41,52 @@
 <script>
   import fetchJsonp from 'fetch-jsonp'
   import delay from 'gen-statem/dist/src/util/delay';
-  import VueTaskMixin from '../directives/VueTaskMixin'
+  import TaskStateMachine from '../../dist/TaskStateMachine';
 
   // process.env.LOG_LEVEL = 'info'
 
   export default {
     name: 'app',
 
-    props: {
-      taskTimeout: {
-        default: 2000,
-      },
-    },
-
     components: {},
-
-    mixins: [VueTaskMixin],
 
     data: function () {
       return {
+        taskSM: new TaskStateMachine( 2000 ),
+        state: '',
         query: '',
+        items: [],
         iter: 0,
+        error: '',
       }
     },
+
+    created() {
+      this.taskSM
+        .exec( this.search.bind( this ) )
+        .on( 'done', ( { response } ) => this.items = response )
+        .on( 'error', ( { errors } ) => this.error = errors[0].message )
+        .on( 'state', ( s ) => this.state = Array.isArray( s ) ? s.join( '/' ) : s )
+    },
+
+    computed: {
+      isLoading() {
+        return this.state === 'running'
+      },
+      isSuccess() {
+        return this.state === 'done/done'
+      },
+      isError() {
+        return this.state === 'done/error'
+      },
+      isCancelled() {
+        return this.state === 'done/cancel'
+      },
+      isTimeout() {
+        return this.state === 'done/timeout'
+      },
+    },
+
 
     methods: {
       async search( query ) {
@@ -82,15 +105,17 @@
         return res
       },
 
+      cancel() {
+        this.taskSM.cancel()
+      },
+
       handleSubmit() {
+        this.items = []
         this.iter++
-        this.startTask( this.query )
+        this.taskSM
+          .reset()
+          .start( this.query )
       },
-
-      runTask( ...args ) {
-        return this.search( ...args )
-      },
-
     },
   }
 </script>
