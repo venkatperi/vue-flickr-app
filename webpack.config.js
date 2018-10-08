@@ -88,7 +88,7 @@ if ( isProduction ) {
   // noinspection JSUnusedGlobalSymbols, JSUnresolvedFunction
   module.exports.plugins = (module.exports.plugins || []).concat( [
 
-    new BundleAnalyzerPlugin( { analyzerMode: 'static' } ),
+    // new BundleAnalyzerPlugin( { analyzerMode: 'static' } ),
 
     new webpack.DefinePlugin( {
       'process.env': { NODE_ENV: '"production"' },
