@@ -17,7 +17,12 @@
     </form>
     <div class="bottom">
       <div class="message" v-if="taskRunning">
-        Loading. You have 1 second to cancel...
+        You have 1 second to cancel.
+        <span class="sub" v-if="doTimeout || doError">If you do nothing, this one's going to {{ doError ? 'fail' :
+          doTimeout?
+          'timeout' :
+          'succeed' }}
+        </span>
       </div>
       <div class="message" v-if="taskFailed" v-html="task.error">
         Error!
@@ -65,7 +70,25 @@
       }
     },
 
+    computed: {
+      doTimeout() {
+        return this.iter % 4 === 0
+      },
+      doError() {
+        return this.iter % 5 === 0
+      },
+    },
+
     methods: {
+      handleSubmit() {
+        this.iter++
+        this.startTask( this.query )
+      },
+
+      runTask( ...args ) {
+        return this.search( ...args )
+      },
+
       async search( query ) {
         const encodedQuery = encodeURIComponent( query );
 
@@ -76,19 +99,10 @@
 
         res = (await res.json()).items
         await delay( 1000 )     // give user enough time to cancel
-        if ( this.iter % 5 === 0 )
+        if ( this.doError )
           throw new Error( 'Uh oh, an error, a big bad error.' )
-        await delay( this.iter % 4 === 0 ? 1500 : 0 )
+        await delay( this.doTimeout ? 1500 : 0 )
         return res
-      },
-
-      handleSubmit() {
-        this.iter++
-        this.startTask( this.query )
-      },
-
-      runTask( ...args ) {
-        return this.search( ...args )
       },
 
     },
@@ -113,6 +127,9 @@
     font-size: 30px;
     text-align: center;
     margin: 30px;
+    .sub {
+      font-size: 18px;
+    }
   }
 
 </style>
