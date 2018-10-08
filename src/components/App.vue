@@ -18,11 +18,11 @@
     <div class="bottom">
       <div class="message" v-if="taskRunning">
         You have 1 second to cancel.
-        <span class="sub" v-if="doTimeout || doError">If you do nothing, this one's going to {{ doError ? 'fail' :
+        <div class="sub" v-if="doTimeout || doError">If you do nothing, this one's going to {{ doError ? 'fail' :
           doTimeout?
           'timeout' :
           'succeed' }}
-        </span>
+        </div>
       </div>
       <div class="message" v-if="taskFailed" v-html="task.error">
         Error!
