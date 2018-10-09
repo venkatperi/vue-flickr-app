@@ -82,7 +82,7 @@
     methods: {
       handleSubmit() {
         this.iter++
-        this.startTask( this.query )
+        this.startTaskWithReset( this.query )
       },
 
       runTask( ...args ) {
