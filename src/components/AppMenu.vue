@@ -4,7 +4,7 @@
       </div>
 
       <div class="col icon2 float-right text-right">
-        <a class="icon" href="https://github.com/venkatperi/hotelsafe" target="_blank">
+        <a class="icon" href="https://github.com/venkatperi/vue-flickr-app" target="_blank">
           <font-awesome-icon :icon="['fab', 'github']" size="1x"/>
         </a>
       </div>
