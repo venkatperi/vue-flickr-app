@@ -34,7 +34,7 @@
         Cancelled! Changed your mind?
       </div>
       <div class="gallery" v-if="taskSucceeded">
-        <img v-for="item in task.response"
+        <img v-for="item in task.result"
           class="item"
           :src="item.media.m"
         />

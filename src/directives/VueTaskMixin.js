@@ -36,7 +36,7 @@ export default {
         sm: {},
         state: '',
         error: {},
-        response: undefined,
+        result: undefined,
       },
     }
   },
@@ -45,7 +45,7 @@ export default {
     this.task.sm = new TaskStateMachine( this.taskTimeout )
       .on( 'state', ( s ) => this.task.state = Array.isArray( s ) ? s.join( '/' ) : s )
       .exec( this.runTask.bind( this ) )
-      .on( 'done', ( { response } ) => this.task.response = response )
+      .on( 'done', ( { result } ) => this.task.result = result )
       .on( 'cancel', () => this.onTaskCancel() )
       .on( 'timeout', () => this.onTaskTimeout() )
       .on( 'error', ( { errors } ) => {
@@ -88,14 +88,18 @@ export default {
     },
 
     startTask( ...args ) {
-      this.resetTask()
-      this.task.response = undefined
+      this.task.result = undefined
       this.task.error = undefined
       this.task.sm.start( args )
       return this
     },
 
+    startTaskWithReset( ...args ) {
+      return this.resetTask().startTask( ...args )
+    },
+
     async runTask( ...args ) {
+      throw new Error( 'Must override runTask' )
     },
 
     onTaskError( error ) {
