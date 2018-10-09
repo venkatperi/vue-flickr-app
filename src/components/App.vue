@@ -2,6 +2,7 @@
   <div>
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
+        <div class="state">State: {{ task.state }}</div>
         <div class="input-group">
           <input
             type="search"
@@ -40,6 +41,7 @@
         />
       </div>
     </div>
+    <img src="task-detail.png" class="diagram"/>
   </div>
 </template>
 
@@ -110,6 +112,14 @@
 </script>
 
 <style lang="scss">
+  .diagram {
+    width: 100%;
+  }
+
+  .state {
+    color: #bbb;
+    margin-bottom: 10px;
+  }
 
   .bottom {
     min-height: 300px;
