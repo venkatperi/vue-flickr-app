@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "test": "TS_NODE_COMPILER_OPTIONS='{\"noImplicitAny\":false}' mocha ",
-    "build": "rm -rf dist && tsc && cross-env NODE_ENV=production webpack --progress --hide-modules && cp task-detail.png dist/"
+    "build": "rm -rf dist && tsc && cross-env NODE_ENV=production webpack --progress --hide-modules && cp task-detail.svg dist/"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.2",
@@ -29,6 +29,8 @@
     "postcss-scss": "^2.0.0",
     "string-replace-loader": "^2.1.1",
     "sugarss": "^1.0.1",
+    "svg.filter.js": "^2.0.2",
+    "svg.js": "^2.6.6",
     "toastr": "^2.1.4",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "uniqid": "^5.0.3",

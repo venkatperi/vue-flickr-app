@@ -1,5 +1,6 @@
 <template>
   <div>
+    <object id="diagram" ref="diagram" data="task-detail.svg" class="diagram"></object>
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
         <div class="state">State: {{ task.state }}</div>
@@ -41,7 +42,7 @@
         />
       </div>
     </div>
-    <img src="task-detail.png" class="diagram"/>
+    <!--<img src="task-detail.png" class="diagram"/>-->
   </div>
 </template>
 
@@ -49,6 +50,16 @@
   import fetchJsonp from 'fetch-jsonp'
   import delay from 'gen-statem/dist/src/util/delay';
   import VueTaskMixin from '../directives/VueTaskMixin'
+
+  const SVG = require( 'svg.js' )
+  const Filter = require( 'svg.filter.js' )
+
+
+  const filter = new SVG.Filter();
+
+  // create the filters effects here
+  let blur = filter.offset( 0, 0 ).gaussianBlur( 5 );
+  filter.blend( filter.source, blur );
 
   // process.env.LOG_LEVEL = 'info'
 
@@ -69,7 +80,36 @@
       return {
         query: '',
         iter: 0,
+        svgDoc: {},
+        anim: 1000,
+        event: {},
       }
+    },
+
+    created() {
+      this.task.sm.on( 'event', ( e ) => {
+        this.event = `${e.route}#${this.task.state}`.replace( /#/g, '_' )
+      } )
+    },
+
+    mounted() {
+      let that = this
+      this.$nextTick( function () {
+        document.getElementById( 'diagram' ).addEventListener( 'load', function () {
+          that.svgDoc = this.contentDocument
+        } );
+      } )
+    },
+
+    watch: {
+      'task.state'( s, o ) {
+        let x = s.split( '/' )
+        s = x[x.length - 1]
+        x = o.split( '/' )
+        o = x[x.length - 1]
+        SVG.select( `#${o}`, this.svgDoc ).fill( '#ffffff' )
+        SVG.select( `#${s}`, this.svgDoc ).fill( '#B8E986' )
+      },
     },
 
     computed: {
@@ -82,9 +122,11 @@
     },
 
     methods: {
-      handleSubmit() {
+      async handleSubmit() {
         this.iter++
-        this.startTaskWithReset( this.query )
+        this.resetTask()
+        await delay( this.anim )
+        this.startTask( this.query )
       },
 
       runTask( ...args ) {
@@ -140,6 +182,10 @@
     .sub {
       font-size: 18px;
     }
+  }
+
+  .active-event {
+    fill: #ff0000
   }
 
 </style>
