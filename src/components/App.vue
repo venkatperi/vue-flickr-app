@@ -3,7 +3,9 @@
     <object id="diagram" ref="diagram" data="task-detail.svg" class="diagram"></object>
     <form @submit.prevent="handleSubmit">
       <div class="form-group">
-        <div class="state">State: {{ task.state }}</div>
+        <!--<div class="state">State: {{ task.state }}</div>-->
+        <input type="checkbox" id="checkbox" v-model="showAnim">
+        <label for="checkbox">Show all states (adds delays) </label>
         <div class="input-group">
           <input
             type="search"
@@ -83,6 +85,7 @@
         svgDoc: {},
         anim: 1000,
         event: {},
+        showAnim: true,
       }
     },
 
@@ -125,7 +128,8 @@
       async handleSubmit() {
         this.iter++
         this.resetTask()
-        await delay( this.anim )
+        if ( this.showAnim )
+          await delay( this.anim )
         this.startTask( this.query )
       },
 
