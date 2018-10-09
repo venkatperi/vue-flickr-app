@@ -26,7 +26,7 @@
                 </g>
             </g>
             <g id="Group" transform="translate(780.000000, 330.000000)" fill-rule="nonzero">
-                <path d="M160,50 C160,77.6 124.18,100 80,100 C35.82,100 0,77.6 0,50 C0,22.4 35.82,0 80,0 C124.18,0 160,22.4 160,50 Z" id="running" stroke="#3D4752" stroke-width="4"></path>
+                <path d="M160,50 C160,77.6 124.18,100 80,100 C35.82,100 0,77.6 0,50 C0,22.4 35.82,0 80,0 C124.18,0 160,22.4 160,50 Z" id="running" stroke="#3D4752" stroke-width="4" fill="#FFFFFF"></path>
                 <g id="c-link" transform="translate(44.024691, 37.444444)" fill="#3D4752">
                     <g id="c">
                         <g id="E-link" transform="translate(0.481481, 5.024691)">
