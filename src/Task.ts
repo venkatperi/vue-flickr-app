@@ -32,7 +32,7 @@ type TaskSMData<R> = {
     sessionId?: string
 }
 
-export default class TaskStateMachine<R> extends StateMachine<TaskSMData<R>> {
+export default class Task<R> extends StateMachine<TaskSMData<R>> {
 
     handlers: Handlers<TaskSMData<R>> = [
 

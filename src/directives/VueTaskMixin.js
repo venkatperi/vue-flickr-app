@@ -19,7 +19,7 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import TaskStateMachine from '../../dist/TaskStateMachine';
+import Task from '../../dist/Task';
 
 export default {
 
@@ -42,7 +42,7 @@ export default {
   },
 
   created() {
-    this.task.sm = new TaskStateMachine( this.taskTimeout )
+    this.task.sm = new Task( this.taskTimeout )
       .on( 'state', ( s ) => this.task.state = Array.isArray( s ) ? s.join( '/' ) : s )
       .exec( this.runTask.bind( this ) )
       .on( 'done', ( { result } ) => this.task.result = result )
