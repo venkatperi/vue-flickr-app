@@ -146,10 +146,12 @@
         )
 
         res = (await res.json()).items
-        await delay( 1000 )     // give user enough time to cancel
+        let wait = 0
+        if ( this.showAnim )
+          await delay( wait += 1000 )     // give user enough time to cancel
         if ( this.doError )
           throw new Error( 'Uh oh, an error, a big bad error.' )
-        await delay( this.doTimeout ? 1500 : 0 )
+        await delay( this.doTimeout ? 2500 - wait : 0 )
         return res
       },
 
