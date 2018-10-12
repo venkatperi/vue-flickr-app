@@ -63,7 +63,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import fetchJSONp from 'fetch-jsonp'
   import delay from 'gen-statem/dist/src/util/delay';
   import {MasterDetail} from 'task-wrapper';
@@ -103,13 +102,10 @@
     },
 
     created: function () {
-      let that = this
       this.controller = new MasterDetail( {
         loadTimeout: this.itemsTimeout,
         itemLoader: async function ( req ) {
-          let url = req.media.m.replace( '_m.jpg', '_b.jpg' )
-          // return await that.loadImage( url )
-          return url
+          return req.media.m.replace( '_m.jpg', '_b.jpg' )
         },
       } )
         .on( 'master', () => this.selectedItem = undefined )
@@ -172,12 +168,6 @@
 
       showDetails: function ( index ) {
         this.controller.select( index )
-      },
-
-      loadImage: async function ( url ) {
-        console.log( url )
-        let res = await axios.get( url )
-        return res.data
       },
 
       doSearch: async function ( query ) {
