@@ -1,7 +1,7 @@
 const path = require( 'path' )
 const webpack = require( 'webpack' )
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' )
-const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin
+// const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin
 const ChunkhashReplaceWebpackPlugin = require( 'chunkhash-replace-webpack-plugin' )
 
 const pkg = require( './package.json' )
@@ -98,17 +98,17 @@ if ( isProduction ) {
       'process.env': { NODE_ENV: '"production"' },
     } ),
 
-    new webpack.optimize.CommonsChunkPlugin( {
-      name: 'vendor',
-      minChunks( m ) {
-        return m.context && m.context.indexOf( 'node_modules' ) >= 0;
-      },
-    } ),
-
-    new UglifyJsPlugin( { uglifyOptions: { ecma: 8 } } ),
-
-    new webpack.LoaderOptionsPlugin( { minimize: true } ),
-
+    // new webpack.optimize.CommonsChunkPlugin( {
+    //   name: 'vendor',
+    //   minChunks( m ) {
+    //     return m.context && m.context.indexOf( 'node_modules' ) >= 0;
+    //   },
+    // } ),
+    //
+    // new UglifyJsPlugin( { uglifyOptions: { ecma: 8 } } ),
+    //
+    // new webpack.LoaderOptionsPlugin( { minimize: true } ),
+    //
     new ChunkhashReplaceWebpackPlugin( {
       src: 'index.html',
       dest: 'dist/index.html',
