@@ -19,15 +19,13 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import {Task} from 'task-wrapper'
+import {MasterDetail} from 'task-wrapper'
 
 function upperFirst( s ) {
   return s[0].toUpperCase() + s.substr( 1 )
 }
 
 export default function ( name ) {
-  let upperName = upperFirst( name )
-
   let mixin = {
     props: {},
 
@@ -36,32 +34,22 @@ export default function ( name ) {
     methods: {},
 
     created() {
-      this.$data[name].sm = new MasterDetail( {
-        timeout: this[`${name}Timeout`],
-        job: this[`do${upperName}`].bind( this ),
+      this[name].controller = new MasterDetail( {
+        detailTimeout: this[`${name}DetailTimeout`],
+        loadTimeout: this[`${name}LoadTimeout`],
+        itemLoader: this[`${name}ItemLoader`].bind( this ),
       } )
+        .on( 'master', () => this[name].selectedItem = undefined )
+        .on( 'detail', ( opts ) => this[name].selectedItem = opts.selectedItem )
         .on( 'state', ( s ) => this[name].state = Array.isArray( s ) ? s.join( '/' ) : s )
-        .on( 'done', ( { result } ) => {
-          this[name].result = result
-          this.$emit( `${name}Done` )
-        } )
-        .on( 'cancel', () => this.$emit( `${name}Cancel` ) )
-        .on( 'timeout', () => this.$emit( `${name}Timeout` ) )
-        .on( 'error', ( { errors } ) => {
-          if ( errors ) {
-            this.$data[name].error = errors[0].message
-            this.$emit( `${name}Error` )
-          }
-        } )
+
     },
   }
 
   let status = {
-    'running': `${name}Running`,
-    'done/done': `${name}Succeeded`,
-    'done/error': `${name}Failed`,
-    'done/cancel': `${name}Cancelled`,
-    'done/timeout': `${name}TimedOut`,
+    'master': `${name}Master`,
+    'detail': `${name}Detail`,
+    'loading': `${name}Loading`,
   }
 
   for ( let [state, prop] of Object.entries( status ) ) {
@@ -70,7 +58,12 @@ export default function ( name ) {
     }
   }
 
-  mixin.props[`${name}Timeout`] = {
+  mixin.props[`${name}DetailTimeout`] = {
+    type: Number,
+    required: false,
+  }
+
+  mixin.props[`${name}LoadTimeout`] = {
     type: Number,
     required: false,
   }
@@ -78,32 +71,23 @@ export default function ( name ) {
   mixin.data = function () {
     let data = {}
     data[name] = {
-      sm: {},
+      controller: {},
       state: '',
-      error: {},
-      result: undefined,
+      selectedItem: undefined,
     }
     return data
   }
 
-  mixin.methods[`${name}Cancel`] = function ( reason ) {
-    this[name].sm.cancel( reason )
+  mixin.methods[`${name}SetItems`] = function ( items ) {
+    this[name].controller.setItems( items )
   }
 
-  mixin.methods[`${name}Reset`] = function () {
-    this[name].sm.reset()
+  mixin.methods[`${name}Exit`] = function () {
+    this[name].controller.exit()
   }
 
-  mixin.methods[`${name}Start`] = function ( req ) {
-    this[name].sm.start( req )
-  }
-
-  mixin.methods[`${name}StartWithReset`] = function ( req ) {
-    this[name].sm.startWithReset( req )
-  }
-
-  mixin.methods[`do${upperName}`] = async function ( req ) {
-    throw new Error( `Must override do${upperName}` )
+  mixin.methods[`${name}Select`] = function ( index ) {
+    this[name].controller.select( index )
   }
 
   return mixin

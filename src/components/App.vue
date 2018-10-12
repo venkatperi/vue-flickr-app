@@ -1,9 +1,8 @@
 <template>
   <div class="app">
-    <div class="detail" v-if="showDetail"
-      v-on:keydown.esc="controller.exit()"
-      v-on:click="controller.exit()">
-      <img :src="selectedItem" />
+    <div class="detail" v-if="galleryDetail"
+      v-on:click="galleryExit()">
+      <img :src="gallery.selectedItem" />
     </div>
 
     <object id="diagram"
@@ -65,7 +64,7 @@
 <script>
   import fetchJSONp from 'fetch-jsonp'
   import delay from 'gen-statem/dist/src/util/delay';
-  import {MasterDetail} from 'task-wrapper';
+  import VueMasterDetailMixin from '../directives/VueMasterDetailMixin';
   import VueTaskMixin from '../directives/VueTaskMixin'
 
   const SVG = require( 'svg.js' )
@@ -77,8 +76,8 @@
       searchTimeout: {
         default: 2000,
       },
-      itemsTimeout: {
-        default: 2000,
+      galleryDetailTimeout: {
+        default: 5000,
       },
     },
 
@@ -86,6 +85,7 @@
 
     mixins: [
       VueTaskMixin( 'search' ),
+      VueMasterDetailMixin( 'gallery' ),
     ],
 
     data: function () {
@@ -95,23 +95,10 @@
         svgDoc: {},
         anim: 1000,
         showAnim: false,
-        controller: {},
-        controllerState: '',
-        selectedItem: {},
       }
     },
 
     created: function () {
-      this.controller = new MasterDetail( {
-        detailTimeout: 5000,
-        loadTimeout: this.itemsTimeout,
-        itemLoader: async function ( req ) {
-          return req.media.m.replace( '_m.jpg', '_b.jpg' )
-        },
-      } )
-        .on( 'master', () => this.selectedItem = undefined )
-        .on( 'detail', ( opts ) => this.selectedItem = opts.selectedItem )
-        .on( 'state', ( s ) => this.controllerState = Array.isArray( s ) ? s.join( '/' ) : s )
     },
 
     mounted() {
@@ -125,7 +112,7 @@
 
     watch: {
       'search.result'( items ) {
-        this.controller.setItems( items )
+        this.gallerySetItems( items )
       },
 
       'search.state'( s, o ) {
@@ -155,7 +142,7 @@
       },
 
       showDetail() {
-        return this.controllerState === 'detail'
+        return this.gallery.state === 'detail'
       },
     },
 
@@ -167,8 +154,12 @@
         this.searchRestart( this.query )
       },
 
+      galleryItemLoader: function ( req ) {
+        return req.media.m.replace( '_m.jpg', '_b.jpg' )
+      },
+
       showDetails: function ( index ) {
-        this.controller.select( index )
+        this.gallerySelect( index )
       },
 
       doSearch: async function ( query ) {
