@@ -103,6 +103,7 @@
 
     created: function () {
       this.controller = new MasterDetail( {
+        detailTimeout: 5000,
         loadTimeout: this.itemsTimeout,
         itemLoader: async function ( req ) {
           return req.media.m.replace( '_m.jpg', '_b.jpg' )
