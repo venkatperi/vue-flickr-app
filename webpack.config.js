@@ -9,6 +9,7 @@ const pkg = require( './package.json' )
 const isProduction = process.env.NODE_ENV === 'production'
 
 module.exports = {
+  mode: isProduction ? 'production' : 'development',
   entry: './src/main.js',
   output: {
     path: path.resolve( __dirname, './dist' ),
@@ -18,14 +19,18 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        loader: 'awesome-typescript-loader',
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
       },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-      },
+      // {
+      //   test: /\.js$/,
+      //   loader: 'babel-loader',
+      //   exclude: /node_modules/,
+      // },
       {
         test: /\.(png|jpg|gif)$/,
         loader: 'file-loader',
@@ -67,7 +72,7 @@ module.exports = {
       'components': path.join( __dirname, 'src/components' ),
       'images': path.join( __dirname, 'src/images' ),
     },
-    extensions: ['*', '.js', '.vue', '.json'],
+    extensions: ['*', '.js', '.vue', '.json', '.ts'],
   },
 
   devServer: {

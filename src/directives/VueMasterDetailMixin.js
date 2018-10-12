@@ -25,7 +25,7 @@ function upperFirst( s ) {
   return s[0].toUpperCase() + s.substr( 1 )
 }
 
-export default function ( name = 'task' ) {
+export default function ( name ) {
   let upperName = upperFirst( name )
 
   let mixin = {
@@ -36,7 +36,7 @@ export default function ( name = 'task' ) {
     methods: {},
 
     created() {
-      this.$data[name].sm = new Task( {
+      this.$data[name].sm = new MasterDetail( {
         timeout: this[`${name}Timeout`],
         job: this[`do${upperName}`].bind( this ),
       } )
@@ -98,8 +98,8 @@ export default function ( name = 'task' ) {
     this[name].sm.start( req )
   }
 
-  mixin.methods[`${name}Restart`] = function ( req ) {
-    this[name].sm.restart( req )
+  mixin.methods[`${name}StartWithReset`] = function ( req ) {
+    this[name].sm.startWithReset( req )
   }
 
   mixin.methods[`do${upperName}`] = async function ( req ) {
