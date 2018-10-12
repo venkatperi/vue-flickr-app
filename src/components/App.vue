@@ -66,7 +66,7 @@
   import axios from 'axios'
   import fetchJSONp from 'fetch-jsonp'
   import delay from 'gen-statem/dist/src/util/delay';
-  import {MasterDetail} from '../../../task-wrapper/index';
+  import {MasterDetail} from 'task-wrapper';
   import VueTaskMixin from '../directives/VueTaskMixin'
 
   const SVG = require( 'svg.js' )
@@ -112,7 +112,7 @@
           return url
         },
       } )
-        .on( 'master', ( ) => this.selectedItem = undefined)
+        .on( 'master', () => this.selectedItem = undefined )
         .on( 'detail', ( opts ) => this.selectedItem = opts.selectedItem )
         .on( 'state', ( s ) => this.controllerState = Array.isArray( s ) ? s.join( '/' ) : s )
     },

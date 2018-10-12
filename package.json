@@ -33,7 +33,7 @@
     "sugarss": "^1.0.1",
     "svg.filter.js": "^2.0.2",
     "svg.js": "^2.6.6",
-    "task-wrapper": "^1.0.3",
+    "task-wrapper": "^1.1.0",
     "toastr": "^2.1.4",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "uniqid": "^5.0.3",
