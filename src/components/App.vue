@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <div class="detail" v-if="galleryDetail"
+    <div class="detail" v-if="!galleryMaster"
       v-on:click="galleryExit()">
       <img :src="gallery.selectedItem" />
     </div>
@@ -53,7 +53,7 @@
       <div class="gallery" v-if="searchSucceeded">
         <img v-for="(item, index) in search.result"
           class="item"
-          v-on:click="showDetails(index)"
+          v-on:click="gallerySelect(index)"
           :src="item.media.m" />
       </div>
 
@@ -77,7 +77,7 @@
         default: 2000,
       },
       galleryDetailTimeout: {
-        default: 5000,
+        default: 10000,
       },
     },
 
@@ -104,9 +104,10 @@
     mounted() {
       let that = this
       this.$nextTick( function () {
-        document.getElementById( 'diagram' ).addEventListener( 'load', function () {
-          that.svgDoc = this.contentDocument
-        } );
+        document.getElementById( 'diagram' )
+          .addEventListener( 'load', function () {
+            that.svgDoc = this.contentDocument
+          } );
       } )
     },
 
@@ -141,9 +142,6 @@
         return this.iter % 5 === 0
       },
 
-      showDetail() {
-        return this.gallery.state === 'detail'
-      },
     },
 
     methods: {
@@ -211,6 +209,7 @@
     right: 0;
     object-fit: contain;
     border: solid 20px #000;
+    background: #000;
   }
 
   .detail {
